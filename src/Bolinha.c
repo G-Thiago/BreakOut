@@ -12,7 +12,7 @@ void desenharBola (Bola *b){
 
 }
 
-void atualizarBola ( Bola *b, float delta){
+void atualizarBola ( Bola *b, EstadoJogo *estado, float delta){
 
     b -> centro.x += b -> velocidade.x * delta;
     b -> centro.y += b -> velocidade.y * delta;
@@ -36,26 +36,21 @@ void atualizarBola ( Bola *b, float delta){
 
     }else if ( b -> centro.y + b -> raio >= GetScreenHeight()){
 
-        b -> centro.y = GetScreenHeight() - b -> raio;
-        b -> velocidade.y *= -1;
-
+        estado = AGUARDANDO;
+        
     }
 
 }
 
-void resolverColisaoJ (Bola *b, Jogador *j){
-
-
-   if ( CheckCollisionCircleRec ( b -> centro, b -> raio, j -> ret)){
-
-        b -> centro.y = b -> centro.y - b -> raio;
-        b -> velocidade.y *= -1;
-    
-    }
 
 
 
-}
+
+
+
+
+
+
 
 
 

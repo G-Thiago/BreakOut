@@ -21,6 +21,7 @@
 
 #include "ResourceManager.h"
 
+
 void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade);
 void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
 /**
@@ -40,7 +41,7 @@ GameWorld *createGameWorld( void ) {
                   altura },
         .velocidadeBase = 200,
         .velocidadeAtual = 0,
-        .cor = WHITE
+        .cor = WHITE,
     };
 
     gw -> bolinha = (Bola){
@@ -55,7 +56,8 @@ GameWorld *createGameWorld( void ) {
         .velocidade = {
             200,
             -200,
-        }
+        },
+        .vidaAtual = 3,
 
     };
     
@@ -107,12 +109,19 @@ GameWorld *createGameWorld( void ) {
 
                 },
                 .cor = cores[i],
-                .hp = 1,
-
-
+                .hp = i <= 5 ? 
+                      (i * -1) + 6 :
+                      1,
+                .pontuacaoObtida = 1 <= 5 ?
+                                   (i * -50) + 600:
+                                   100,
+                .pontuacaoAtual = 0,
             };
         }
     }
+
+    
+    gw -> estado = INICIO;
 
     return gw;
 
@@ -130,11 +139,37 @@ void destroyGameWorld( GameWorld *gw ) {
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
 
-    entradaJogador ( &gw -> jogador);
-    atualizarJogador ( &gw -> jogador,  delta);
-    atualizarBola (&gw -> bolinha, delta);
-    resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw-> lin * gw-> col);
-    resolverColisaoJ (&gw -> bolinha, &gw -> jogador);
+    if ( gw -> estado == INICIO){
+         
+        if ( IsKeyPressed(KEY_SPACE)){
+
+         gw->estado = JOGANDO;
+         gw-> bolinha.velocidade.x = GetRandomValue( 0, 1 ) == 0 ? 200 : -200;
+         
+        }
+
+
+    }
+
+    if ( gw -> estado == JOGANDO){
+        
+        entradaJogador ( &gw -> jogador);
+        atualizarJogador ( &gw -> jogador,  delta);
+        atualizarBola (&gw -> bolinha, &gw -> estado, delta);
+        resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw-> lin * gw-> col);
+        resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
+
+    }if (gw -> estado == AGUARDANDO){
+
+        gw -> bolinha.centro.x = GetScreenWidth()/2;
+        gw -> bolinha.centro.y = gw -> jogador.ret.y - gw -> jogador.ret.height;
+
+        if (IsKeyPressed(KEY_SPACE)){
+
+            gw -> estado = JOGANDO;
+        }
+          
+    }
 }
 
 /**
@@ -144,6 +179,9 @@ void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
     ClearBackground( BLACK );
+
+    desenharPontuacao (gw -> alvos);
+
 
     desenharJogador( &gw->jogador );
     desenharBola (&gw -> bolinha);
@@ -164,21 +202,32 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade){
             alvo->hp--;
             b -> centro.y = alvo -> ret.y + alvo -> ret.height + b -> raio;
             b -> velocidade.y = fabs ( b -> velocidade.y);
+            
+            if (alvo-> hp <= 0){
+                alvos -> pontuacaoAtual += alvos -> pontuacaoObtida;
+
+            }
         }
 
     }
 }
 
-void resolverColisaoBolihaJogador (Bola *b, Jogador *j){
+void resolverColisaoBolinhaJogador (Bola *b, Jogador *j){
 
 
    if ( CheckCollisionCircleRec ( b -> centro, b -> raio, j -> ret)){
 
-        b -> velocidade.y *= -1;
-    
+        b -> velocidade.y *= -1;    
     }
 
 
 
 }
+
+
+    
+     
+     
+
+
 

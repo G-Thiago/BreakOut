@@ -11,7 +11,7 @@ void desenharAlvo ( Alvo *a){
         DrawRectangleRec ( a -> ret, a -> cor);
     
     }
-
+    
 
 }
 
@@ -21,5 +21,23 @@ void desenharAlvos ( Alvo *alvos, int quantidade){
 
         desenharAlvo (&alvos[i]);
     }
+
+}
+
+void desenharPontuacao (Alvo *a){
+
+    int Fonte = 50;
+    int Margem = 30;
+    int Fim_eixoX = GetScreenWidth();
+
+    const char *Score = TextFormat ("%d", a -> pontuacaoAtual);
+    int larguraScore = MeasureText (Score, Fonte);
+
+    DrawText(Score, 
+             Fim_eixoX - (Margem + larguraScore),
+             20, 
+             Fonte, 
+             WHITE);
+
 
 }

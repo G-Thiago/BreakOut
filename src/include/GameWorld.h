@@ -11,8 +11,19 @@
 #include "Bolinha.h"
 #include "Alvo.h"
 
+typedef enum EstadoJogo{
+
+    INICIO,
+    JOGANDO,
+    AGUARDANDO,
+    GAMEOVER,
+    MENU,
+
+}EstadoJogo;
+
 typedef struct GameWorld {
     
+    EstadoJogo estado;    
     Alvo *alvos;
     Bola bolinha;
     Jogador jogador;
@@ -21,6 +32,7 @@ typedef struct GameWorld {
     int col;
 
 } GameWorld;
+
 
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.

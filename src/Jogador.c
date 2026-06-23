@@ -33,3 +33,4 @@ void desenharJogador( Jogador *j ) {
     DrawRectangleRec( j->ret, j->cor );
 
 }
+
