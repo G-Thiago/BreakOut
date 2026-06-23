@@ -1,8 +1,7 @@
 #include <stdlib.h>
 
 #include "raylib/raylib.h"
-
-#include "Bolinha.h"
+#include "GameWorld.h"
 
 void desenharBola (Bola *b){
 
@@ -12,7 +11,7 @@ void desenharBola (Bola *b){
 
 }
 
-void atualizarBola ( Bola *b, EstadoJogo *estado, float delta){
+void atualizarBola ( Bola *b, float delta){
 
     b -> centro.x += b -> velocidade.x * delta;
     b -> centro.y += b -> velocidade.y * delta;
@@ -36,8 +35,7 @@ void atualizarBola ( Bola *b, EstadoJogo *estado, float delta){
 
     }else if ( b -> centro.y + b -> raio >= GetScreenHeight()){
 
-        estado = AGUARDANDO;
-        
+            
     }
 
 }

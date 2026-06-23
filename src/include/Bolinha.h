@@ -1,7 +1,6 @@
 #pragma once 
 
 #include "raylib/raylib.h"
-#include "GameWorld.h"
 
 typedef struct Bola{
 
@@ -16,5 +15,5 @@ typedef struct Bola{
 
 }Bola;
 
-void atualizarBola ( Bola *b, GameWorld *gw, float delta);
+void atualizarBola ( Bola *b, float delta);
 void desenharBola (Bola *b);

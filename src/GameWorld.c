@@ -155,7 +155,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         
         entradaJogador ( &gw -> jogador);
         atualizarJogador ( &gw -> jogador,  delta);
-        atualizarBola (&gw -> bolinha, &gw -> estado, delta);
+        atualizarBola (&gw -> bolinha, delta);
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
 
