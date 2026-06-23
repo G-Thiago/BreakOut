@@ -8,9 +8,18 @@
 #pragma once
 
 #include "Jogador.h"
+#include "Bolinha.h"
+#include "Alvo.h"
 
 typedef struct GameWorld {
+    
+    Alvo *alvos;
+    Bola bolinha;
     Jogador jogador;
+       
+    int lin;
+    int col;
+
 } GameWorld;
 
 /**

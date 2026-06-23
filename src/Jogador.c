@@ -1,27 +1,23 @@
 #include <stdlib.h>
 
+
 #include "raylib/raylib.h"
 
 #include "Jogador.h"
 
 void entradaJogador( Jogador *j ) {
 
-    if (IsKeyDown(KEY_LEFT)){
+    int esquerda = IsKeyDown(KEY_LEFT ) ? -1 : 0;
+    int direita = IsKeyDown(KEY_RIGHT) ? 1 : 0;
+    int movimento = esquerda + direita;
 
-        j -> velocidadeAtual = -j -> velocidadeBase;
-
-    }else if (IsKeyDown(KEY_RIGHT)){
-
-        j -> velocidadeAtual = j -> velocidadeBase;
-
-    }else{
-        j -> velocidadeAtual = 0;
-    }
+    j -> velocidadeAtual = j -> velocidadeBase * movimento;
 }
 
 void atualizarJogador( Jogador *j, float delta ) {
 
     j -> ret.x += j -> velocidadeAtual * delta;
+
 
     if ( j -> ret.x + j -> ret.width >= GetScreenWidth()){
 
