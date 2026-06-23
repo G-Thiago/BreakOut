@@ -4,7 +4,8 @@
 
 typedef struct Jogador {
     Rectangle ret;
-    float velocidade;
+    float velocidadeBase;
+    float velocidadeAtual;
     Color cor;
 } Jogador;
 

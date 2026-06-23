@@ -25,9 +25,16 @@ GameWorld *createGameWorld( void ) {
 
     GameWorld *gw = (GameWorld*) malloc( sizeof( GameWorld ) );
 
+    int largura = 150;
+    int altura = 20;
+
     gw->jogador = (Jogador) {
-        .ret = { 100, 100, 100, 50 },
-        .velocidade = 200,
+        .ret = { (GetScreenWidth()/2) - largura/2, 
+                  GetScreenHeight() - (3*altura), 
+                  largura,  
+                  altura },
+        .velocidadeBase = 200,
+        .velocidadeAtual = 0,
         .cor = WHITE
     };
 
@@ -47,6 +54,8 @@ void destroyGameWorld( GameWorld *gw ) {
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
 
+    entradaJogador ( &gw -> jogador);
+    atualizarJogador ( &gw-> jogador,  delta);
 }
 
 /**

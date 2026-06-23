@@ -15,7 +15,7 @@
 int main( void ) {
 
     GameWindow *gameWindow = createGameWindow(
-        400,             // width
+        600,             // width
         800,             // height
         "Breakout",      // title
         60,              // target FPS
