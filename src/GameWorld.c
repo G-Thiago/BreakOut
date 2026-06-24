@@ -155,7 +155,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         entradaJogador ( &gw -> jogador);
         atualizarJogador ( &gw -> jogador,  delta);
         atualizarBola (&gw -> bolinha, delta);
-        resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw-> lin * gw-> col);
+        resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
 
@@ -179,19 +179,18 @@ void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
     ClearBackground( BLACK );
-
-    desenharPontuacao (gw -> alvos);
-
-
-    desenharJogador( &gw->jogador );
-    desenharBola (&gw -> bolinha);
-    desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
-    DesenharVida (&gw -> bolinha);
-    EndDrawing();
-
+   
+        desenharPontuacao (gw -> alvos, gw-> pontuacaoAtual, gw);
+        desenharJogador( &gw->jogador );
+        desenharBola (&gw -> bolinha);
+        desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
+        DesenharVida (&gw -> bolinha);
+        EndDrawing();
+       
+    
 }
 
-void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade){
+void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quantidade){
 
     for ( int i = 0; i < quantidade; i++){
 
@@ -200,23 +199,55 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade){
         if (CheckCollisionCircleRec ( b -> centro, b -> raio, alvo -> ret) && alvo -> hp > 0){
          
             alvo->hp--;
-            b -> centro.y = alvo -> ret.y + alvo -> ret.height + b -> raio;
-            b -> velocidade.y = fabs ( b -> velocidade.y);
             
-            if (alvo-> hp <= 0){
-                alvos -> pontuacaoAtual += alvos -> pontuacaoObtida;
+            float centroAlvox = alvo -> ret.x + alvo -> ret.width / 2.0f;
+            float centroAlvoy = alvo -> ret.y + alvo -> ret.height / 2.0f;
 
+            float SobreposicaoX = ( b -> raio + alvo -> ret.width / 2.0f) - fabs ( b -> centro.x - centroAlvox);
+            float SobreposicaoY = ( b -> raio + alvo -> ret.height / 2.0f) - fabs ( b -> centro.y - centroAlvoy);
+            
+             if ( alvo -> hp <= 0){
+
+                gw -> pontuacaoAtual += alvo-> pontuacaoObtida;
+                alvo -> pontuacaoObtida = 0;
             }
-        }
+
+             if ( SobreposicaoX < SobreposicaoY){
+
+                if ( b-> centro.x < centroAlvox){
+
+                    b -> centro.x = alvo -> ret.x - b->raio;
+
+                }else{
+
+                    b-> centro.x = alvo-> ret.x + alvo->ret.width + b->raio;
+
+                }
+                b-> velocidade.x *= -1;
+
+            }else{
+
+                if ( b -> centro.y < centroAlvoy){
+
+                    b-> centro.y = alvo-> ret.y - b-> raio;
+
+                }else{
+
+                    b-> centro.y = alvo -> ret.y + alvo -> ret.height + b->raio;
+                }
+                b-> velocidade.y *= -1;
+            }   
+            
 
     }
+  }
 }
 
 void resolverColisaoBolinhaJogador (Bola *b, Jogador *j){
 
 
    if ( CheckCollisionCircleRec ( b -> centro, b -> raio, j -> ret)){
-
+        b-> centro.y = j -> ret.y - b -> raio; 
         b -> velocidade.y *= -1;    
     }
 
@@ -241,7 +272,28 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
 
        *estado = AGUARDANDO;
             
+    }else if ( b -> vidaAtual <= 0){
+
+        *estado = GAMEOVER;
     }
+
+
+}
+
+void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
+
+    int Fonte = 50;
+    int Margem = 30;
+    int Fim_eixoX = GetScreenWidth();
+
+    const char *Score = TextFormat ("%d", gw-> pontuacaoAtual);
+    int larguraScore = MeasureText (Score, Fonte);
+
+    DrawText(Score, 
+             Fim_eixoX - (Margem + larguraScore),
+             20, 
+             Fonte, 
+             WHITE);
 
 
 }

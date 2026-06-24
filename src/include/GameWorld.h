@@ -17,9 +17,9 @@ typedef enum EstadoJogo{
 
 }EstadoJogo;
 
+#include "Alvo.h"
 #include "Jogador.h"
 #include "Bolinha.h"
-#include "Alvo.h"
 
 typedef struct GameWorld {
     
@@ -30,6 +30,7 @@ typedef struct GameWorld {
        
     int lin;
     int col;
+    int pontuacaoAtual;
 
 } GameWorld;
 
@@ -54,6 +55,7 @@ void updateGameWorld( GameWorld *gw, float delta );
  */
 void drawGameWorld( GameWorld *gw );
 
-void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade);
+void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quantidade);
 void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
 void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j);
+void desenharPontuacao (Alvo *a, int PontucaoAtual, GameWorld *gw);

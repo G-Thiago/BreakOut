@@ -4,7 +4,6 @@
 
 #include "raylib/raylib.h"
 
-
 typedef struct Alvo{
 
     Rectangle ret;
@@ -19,4 +18,3 @@ typedef struct Alvo{
 
 void desenharAlvo ( Alvo *a);
 void desenharAlvos ( Alvo *alvos, int quantidade);
-void desenharPontuacao (Alvo *a);
