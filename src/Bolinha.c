@@ -33,12 +33,34 @@ void atualizarBola ( Bola *b, float delta){
         b -> velocidade.y *= -1;
 
 
-    }else if ( b -> centro.y + b -> raio >= GetScreenHeight()){
-
-            
     }
 
 }
+void DesenharVida (Bola *b){
+
+    int raioVida = 20;
+    int espaço = 5;
+    int tamanhoBarraVida = 2 * raioVida + espaço;
+    
+    int xIni = 40;
+    int yIni = 30;
+
+    for ( int i = 0; i < b -> vidaAtual; i++){
+
+        int xAtual = xIni + ( i * ( tamanhoBarraVida));
+       DrawCircle ( xAtual, yIni, raioVida, WHITE);
+
+    }
+
+
+}
+
+
+
+
+
+
+
 
 
 

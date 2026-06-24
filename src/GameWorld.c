@@ -18,12 +18,12 @@
 
 #include "Jogador.h"
 #include "Bolinha.h"
-
 #include "ResourceManager.h"
 
 
-void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade);
-void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
+int largura = 150;
+int altura = 20;
+
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
  */
@@ -31,8 +31,7 @@ GameWorld *createGameWorld( void ) {
 
     GameWorld *gw = (GameWorld*) malloc( sizeof( GameWorld ) );
 
-    int largura = 150;
-    int altura = 20;
+   
 
     gw->jogador = (Jogador) {
         .ret = { (GetScreenWidth()/2) - largura/2, 
@@ -158,6 +157,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         atualizarBola (&gw -> bolinha, delta);
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
+        ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
 
     }if (gw -> estado == AGUARDANDO){
 
@@ -186,7 +186,7 @@ void drawGameWorld( GameWorld *gw ) {
     desenharJogador( &gw->jogador );
     desenharBola (&gw -> bolinha);
     desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
-
+    DesenharVida (&gw -> bolinha);
     EndDrawing();
 
 }
@@ -223,6 +223,29 @@ void resolverColisaoBolinhaJogador (Bola *b, Jogador *j){
 
 
 }
+void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
+
+    if ( b -> centro.y + b -> raio >= GetScreenHeight()){
+
+        b -> vidaAtual -= 1;
+        b -> centro.x = GetScreenWidth()/2;
+        b -> centro.y =  j-> ret.y - j-> ret.height;
+        
+        b -> velocidade.y = -200;
+        b -> velocidade.x = GetRandomValue(-200, 200);
+
+        j -> ret.x = GetScreenWidth()/2 - largura/2; 
+        j -> ret.y = GetScreenHeight() - (3*altura);
+                
+        
+
+       *estado = AGUARDANDO;
+            
+    }
+
+
+}
+
 
 
     

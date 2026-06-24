@@ -7,10 +7,6 @@
  */
 #pragma once
 
-#include "Jogador.h"
-#include "Bolinha.h"
-#include "Alvo.h"
-
 typedef enum EstadoJogo{
 
     INICIO,
@@ -20,6 +16,10 @@ typedef enum EstadoJogo{
     MENU,
 
 }EstadoJogo;
+
+#include "Jogador.h"
+#include "Bolinha.h"
+#include "Alvo.h"
 
 typedef struct GameWorld {
     
@@ -53,3 +53,7 @@ void updateGameWorld( GameWorld *gw, float delta );
  * @brief Draws the state of the game.
  */
 void drawGameWorld( GameWorld *gw );
+
+void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, int quantidade);
+void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
+void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j);
