@@ -13,13 +13,14 @@ typedef enum EstadoJogo{
     JOGANDO,
     AGUARDANDO,
     GAMEOVER,
-    MENU,
+    
 
 }EstadoJogo;
 
 #include "Alvo.h"
 #include "Jogador.h"
 #include "Bolinha.h"
+#include "Menus.h"
 
 typedef struct GameWorld {
     
@@ -27,7 +28,7 @@ typedef struct GameWorld {
     Alvo *alvos;
     Bola bolinha;
     Jogador jogador;
-       
+
     int lin;
     int col;
     int pontuacaoAtual;

@@ -20,7 +20,7 @@ void atualizarBola ( Bola *b, float delta){
 
         b -> centro.x = b -> raio;
         b -> velocidade.x *= -1;
-
+        
     }else if ( b -> centro.x + b -> raio >= GetScreenWidth()){
 
         b -> centro.x = GetScreenWidth() - b-> raio;
@@ -48,7 +48,7 @@ void DesenharVida (Bola *b){
     for ( int i = 0; i < b -> vidaAtual; i++){
 
         int xAtual = xIni + ( i * ( tamanhoBarraVida));
-       DrawCircle ( xAtual, yIni, raioVida, WHITE);
+        DrawCircle ( xAtual, yIni, raioVida, RED);
 
     }
 

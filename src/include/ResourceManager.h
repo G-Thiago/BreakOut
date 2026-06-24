@@ -11,7 +11,7 @@
 
 typedef struct ResourceManager {
     Texture2D textureExample;
-    Sound soundExample;
+    Sound sfx;
     Music musicExample;
 } ResourceManager;
 

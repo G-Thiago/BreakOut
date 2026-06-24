@@ -137,29 +137,27 @@ void destroyGameWorld( GameWorld *gw ) {
  * @brief Reads user input and updates the state of the game.
  */
 void updateGameWorld( GameWorld *gw, float delta ) {
+    
+    switch ( gw -> estado ){
 
-    if ( gw -> estado == INICIO){
-         
-        if ( IsKeyPressed(KEY_SPACE)){
+        case INICIO:
+               
+        InteragirMenInicial( &gw -> estado);
 
-         gw->estado = JOGANDO;
-         gw-> bolinha.velocidade.x = GetRandomValue( 0, 1 ) == 0 ? 200 : -200;
-         
-        }
+        break;
 
+        case JOGANDO:
 
-    }
-
-    if ( gw -> estado == JOGANDO){
-        
         entradaJogador ( &gw -> jogador);
         atualizarJogador ( &gw -> jogador,  delta);
         atualizarBola (&gw -> bolinha, delta);
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
+        
+        break; 
 
-    }if (gw -> estado == AGUARDANDO){
+        case AGUARDANDO:
 
         gw -> bolinha.centro.x = GetScreenWidth()/2;
         gw -> bolinha.centro.y = gw -> jogador.ret.y - gw -> jogador.ret.height;
@@ -168,8 +166,14 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
             gw -> estado = JOGANDO;
         }
-          
-    }
+
+        break;
+
+        case GAMEOVER:
+
+        break;
+
+    }   
 }
 
 /**
@@ -178,15 +182,33 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
-    ClearBackground( BLACK );
-   
+    
+    if ( gw -> estado == INICIO){
+         
+        DesenharMenuInicial( );
+    }
+    
+    
+    if ( gw -> estado == AGUARDANDO || gw -> estado == JOGANDO){
+        
+        ClearBackground( BLACK );
+
         desenharPontuacao (gw -> alvos, gw-> pontuacaoAtual, gw);
         desenharJogador( &gw->jogador );
         desenharBola (&gw -> bolinha);
         desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
         DesenharVida (&gw -> bolinha);
+    
+    }if ( gw -> estado == GAMEOVER){
+
+        DesenharGameOver();
+    }    
+
+
+        
         EndDrawing();
-       
+    
+
     
 }
 
@@ -269,15 +291,17 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
         j -> ret.y = GetScreenHeight() - (3*altura);
                 
         
-
-       *estado = AGUARDANDO;
-            
-    }else if ( b -> vidaAtual <= 0){
-
+    if ( b -> vidaAtual > 0){
+     
+        *estado = AGUARDANDO;
+      
+    }else{     
+     
         *estado = GAMEOVER;
     }
 
 
+ }
 }
 
 void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
@@ -297,12 +321,3 @@ void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
 
 
 }
-
-
-
-    
-     
-     
-
-
-

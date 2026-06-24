@@ -29,8 +29,10 @@ int main( void ) {
         false,           // load resources
         false            // init audio
     );
-
+    
+    
     initGameWindow( gameWindow );
+    InitAudioDevice();
 
     return 0;
 
