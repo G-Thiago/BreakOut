@@ -16,4 +16,4 @@ typedef struct RetBotoes{
 void DesenharGameOver ();
 void DesenharMenuInicial();
 
-void InteragirMenInicial (EstadoJogo *estado);
+void InteragirMenu (EstadoJogo *estado);

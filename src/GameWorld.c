@@ -142,7 +142,7 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
         case INICIO:
                
-        InteragirMenInicial( &gw -> estado);
+        InteragirMenu( &gw -> estado);
 
         break;
 
@@ -170,6 +170,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         break;
 
         case GAMEOVER:
+
+        InteragirMenu( &gw -> estado);
+        gw -> bolinha.vidaAtual = 3;
+        gw -> pontuacaoAtual = 0;
 
         break;
 
@@ -200,8 +204,10 @@ void drawGameWorld( GameWorld *gw ) {
         DesenharVida (&gw -> bolinha);
     
     }if ( gw -> estado == GAMEOVER){
-
+        
         DesenharGameOver();
+        
+
     }    
 
 
@@ -321,3 +327,4 @@ void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
 
 
 }
+
