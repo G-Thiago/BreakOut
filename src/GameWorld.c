@@ -326,7 +326,7 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
         b -> centro.x = GetScreenWidth()/2;
         b -> centro.y =  j-> ret.y - j-> ret.height;
         
-        b -> velocidade.y = -200;
+        b -> velocidade.y = -400;
         b -> velocidade.x = GetRandomValue(-200, 200);
 
         j -> ret.x = GetScreenWidth()/2 - largura/2; 
@@ -381,22 +381,28 @@ void resetAlvos(GameWorld *gw) {
 
     for (int i = 0; i < gw->lin; i++) {
         for (int j = 0; j < gw->col; j++) {
+            
+            bool sorteioPowerup = (rand() % 100 <= 10);
 
             int p = i * gw->col + j;
+            
+            gw -> alvos[p] = (Alvo){
+                        
+            .ret.x = xIni + j * (larguraAlvo + espaco),
+            .ret.y = yIni + i * (alturaAlvo + espaco),
+            .ret.width = larguraAlvo,
+            .ret.height = alturaAlvo,
 
-            gw->alvos[p].ret.x = xIni + j * (larguraAlvo + espaco);
-            gw->alvos[p].ret.y = yIni + i * (alturaAlvo + espaco);
-            gw->alvos[p].ret.width = larguraAlvo;
-            gw->alvos[p].ret.height = alturaAlvo;
+            .cor = sorteioPowerup ? YELLOW : cores[i],
 
-            gw->alvos[p].cor = cores[i];
+            .hp = (i <= 5) ? ((i * -1) + 6) : 1,
 
-            gw->alvos[p].hp = (i <= 5) ? ((i * -1) + 6) : 1;
+            .pontuacaoObtida =
+                (i <= 5) ? ((i * -50) + 600) : 100,
 
-            gw->alvos[p].pontuacaoObtida =
-                (i <= 5) ? ((i * -50) + 600) : 100;
+            .pontuacaoAtual = 0,
+        };
 
-            gw->alvos[p].pontuacaoAtual = 0;
-        }
     }
+  }
 }
