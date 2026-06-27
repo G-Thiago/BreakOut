@@ -6,7 +6,7 @@
 #define LARGURARET 250
 #define ALTURARET 100
 
-void DesenharMenuInicial(EstadoJogo *estado){
+void DesenharMenuInicial(void){
     
     ClearBackground(BLUE);
 
@@ -87,7 +87,7 @@ void DesenharMenuInicial(EstadoJogo *estado){
                 
 }
 
-void DesenharGameOver (){
+void DesenharGameOver (void){
 
     ClearBackground(RED);
 
