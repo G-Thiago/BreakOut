@@ -3,6 +3,7 @@
 #include "raylib/raylib.h"
 
 #include "Alvo.h"
+#include <stdio.h>
 
 void desenharAlvo ( Alvo *a){
 
@@ -21,23 +22,5 @@ void desenharAlvos ( Alvo *alvos, int quantidade){
 
         desenharAlvo (&alvos[i]);
     }
-
-}
-void desenharPowerUp ( PowerUp *pu){
-  
-    DrawCircle( pu -> centro.x, pu -> centro.y, pu -> raio, pu -> cor);
-
-}
-
-void atualizarPowerUp (PowerUp *pu, float delta){
-
-    pu -> centro.y += pu -> velocidadeY * delta;
-
-    if ( pu -> centro.y >= GetScreenHeight()){
-
-        pu -> ativo = false;
-
-    }
-
 
 }

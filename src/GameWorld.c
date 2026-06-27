@@ -62,7 +62,7 @@ GameWorld *createGameWorld( void ) {
     gw -> powerup = (PowerUp){
 
         .centro = {0},
-        .raio = 20,
+        .raio = 8,
         .velocidadeY = 200,
         .cor = YELLOW,
         .ativo = false,
@@ -107,7 +107,7 @@ GameWorld *createGameWorld( void ) {
 
             int p = i * gw -> col + j;
 
-            bool sorteioPowerup = (rand() % 100 <= 8);
+            bool sorteioPowerup = (rand() % 100 >= 1);
 
             gw -> alvos[p] = (Alvo){
 
@@ -168,10 +168,9 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
-        
-        if ( gw -> powerup.ativo == true){
-            atualizarPowerUp ( &gw -> powerup, delta);
-        }
+            if ( gw -> powerup.ativo){
+                atualizarPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
+            }
 
         break; 
 
@@ -221,8 +220,10 @@ void drawGameWorld( GameWorld *gw ) {
         desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
         DesenharVida (&gw -> bolinha);
 
-        if ( gw -> powerup.ativo){
-            desenharPowerUp (&gw -> powerup);
+        if ( gw -> powerup.ativo && gw -> estado == JOGANDO){
+            
+                desenharPowerUp (&gw -> powerup);
+           
         }
     }if ( gw -> estado == GAMEOVER){
         

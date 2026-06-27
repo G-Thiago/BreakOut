@@ -1,7 +1,6 @@
 #pragma once 
 
 #include "raylib/raylib.h"
-#include "GameWorld.h"
 
 typedef struct Bola{
 
@@ -14,6 +13,8 @@ typedef struct Bola{
     Vector2 centro;
     Vector2 velocidade;
 
+    int bolasAtual;
+    
 }Bola;
 
 

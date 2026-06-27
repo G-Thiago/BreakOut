@@ -7,6 +7,7 @@
  */
 #pragma once
 
+#define BOLAS_MAX 4
 typedef enum EstadoJogo{
 
     INICIO,
@@ -21,6 +22,7 @@ typedef enum EstadoJogo{
 #include "Jogador.h"
 #include "Bolinha.h"
 #include "Menus.h"
+#include "PowerUp.h"
 #include <time.h>
 
 typedef struct GameWorld {
@@ -34,7 +36,7 @@ typedef struct GameWorld {
     int lin;
     int col;
     int pontuacaoAtual;
-
+    
 } GameWorld;
 
 
