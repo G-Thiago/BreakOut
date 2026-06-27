@@ -64,3 +64,5 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
 void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
 void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j);
 void desenharPontuacao (Alvo *a, int PontucaoAtual, GameWorld *gw);
+void resetAlvos(GameWorld *gw);
+

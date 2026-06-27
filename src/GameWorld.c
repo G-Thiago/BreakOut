@@ -69,7 +69,7 @@ GameWorld *createGameWorld( void ) {
 
 
     };
-
+    
     gw -> lin = 10;
     gw -> col = 6;
 
@@ -77,19 +77,19 @@ GameWorld *createGameWorld( void ) {
     
     //Baseado na coluna e linha que estou, faremos os alvos serem criados
 
-    Color cores[11] = {
+    Color cores[10] = {
 
-        GREEN, 
-        GREEN, 
+        RED, 
         BLUE, 
+        RED, 
         BLUE, 
-        PURPLE, 
-        PURPLE, 
+        RED, 
+        BLUE, 
         RED, 
         BLUE, 
         RED, 
         BLUE,
-        YELLOW,
+
 
     };
 
@@ -119,6 +119,7 @@ GameWorld *createGameWorld( void ) {
                     .height = alturaAlvo,
 
                 },
+                .cor = cores[i],
                 .hp = i <= 5 ? 
                       (i * -1) + 6 :
                       1,
@@ -126,9 +127,6 @@ GameWorld *createGameWorld( void ) {
                                    (i * -50) + 600:
                                    100,
                 .pontuacaoAtual = 0,
-                .temPowerUp = sorteioPowerup,
-                .cor = sorteioPowerup ? YELLOW : cores[i],
-
             };
         }
     }
@@ -168,9 +166,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
-            if ( gw -> powerup.ativo){
-                atualizarPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
-            }
+        
+        if ( gw -> powerup.ativo == true){
+            atualizarPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
+        }
 
         break; 
 
@@ -185,12 +184,15 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         }
 
         break;
-
+        
         case GAMEOVER:
 
         InteragirMenu( &gw -> estado);
+        
         gw -> bolinha.vidaAtual = 3;
         gw -> pontuacaoAtual = 0;
+    
+        resetAlvos(gw);
 
         break;
 
@@ -225,6 +227,7 @@ void drawGameWorld( GameWorld *gw ) {
                 desenharPowerUp (&gw -> powerup);
            
         }
+    
     }if ( gw -> estado == GAMEOVER){
         
         DesenharGameOver();
@@ -260,15 +263,6 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
 
                 gw -> pontuacaoAtual += alvo-> pontuacaoObtida;
                 alvo -> pontuacaoObtida = 0;
-                
-                if ( alvo->temPowerUp){
-
-                    gw -> powerup.centro.x = alvo-> ret.x + (alvo -> ret.width /2);
-                    gw -> powerup.centro.y = alvo -> ret.y + (alvo -> ret.height/2);
-                    gw -> powerup.ativo = true;
-                    alvo -> temPowerUp = false;
-
-                }
             }
 
              if ( SobreposicaoX < SobreposicaoY){
@@ -321,7 +315,7 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
         b -> centro.x = GetScreenWidth()/2;
         b -> centro.y =  j-> ret.y - j-> ret.height;
         
-        b -> velocidade.y = -400;
+        b -> velocidade.y = -200;
         b -> velocidade.x = GetRandomValue(-200, 200);
 
         j -> ret.x = GetScreenWidth()/2 - largura/2; 
@@ -359,3 +353,39 @@ void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
 
 }
 
+void resetAlvos(GameWorld *gw) {
+
+    Color cores[10] = {
+        RED, BLUE, RED, BLUE, RED,
+        BLUE, RED, BLUE, RED, BLUE
+    };
+
+    int larguraAlvo = 80;
+    int alturaAlvo = 20;
+    int espaco = 5;
+
+    int larguraTotal = larguraAlvo * gw->col + espaco * (gw->col - 1);
+    int xIni = GetScreenWidth()/2 - larguraTotal/2;
+    int yIni = 150;
+
+    for (int i = 0; i < gw->lin; i++) {
+        for (int j = 0; j < gw->col; j++) {
+
+            int p = i * gw->col + j;
+
+            gw->alvos[p].ret.x = xIni + j * (larguraAlvo + espaco);
+            gw->alvos[p].ret.y = yIni + i * (alturaAlvo + espaco);
+            gw->alvos[p].ret.width = larguraAlvo;
+            gw->alvos[p].ret.height = alturaAlvo;
+
+            gw->alvos[p].cor = cores[i];
+
+            gw->alvos[p].hp = (i <= 5) ? ((i * -1) + 6) : 1;
+
+            gw->alvos[p].pontuacaoObtida =
+                (i <= 5) ? ((i * -50) + 600) : 100;
+
+            gw->alvos[p].pontuacaoAtual = 0;
+        }
+    }
+}
