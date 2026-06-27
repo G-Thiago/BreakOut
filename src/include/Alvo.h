@@ -18,5 +18,21 @@ typedef struct Alvo{
 
 }Alvo;
 
+typedef struct PowerUp{
+
+    float velocidadeY;
+    Vector2 centro;
+
+    float raio;
+    
+    Color cor;
+
+    bool ativo;
+
+}PowerUp;
+
 void desenharAlvo ( Alvo *a);
 void desenharAlvos ( Alvo *alvos, int quantidade);
+
+void desenharPowerUp ( PowerUp *pu);
+void atualizarPowerUp (PowerUp *pu, float delta);

@@ -59,7 +59,17 @@ GameWorld *createGameWorld( void ) {
         .vidaAtual = 3,
 
     };
-    
+    gw -> powerup = (PowerUp){
+
+        .centro = {0},
+        .raio = 20,
+        .velocidadeY = 200,
+        .cor = YELLOW,
+        .ativo = false,
+
+
+    };
+
     gw -> lin = 10;
     gw -> col = 6;
 
@@ -159,6 +169,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
         
+        if ( gw -> powerup.ativo == true){
+            atualizarPowerUp ( &gw -> powerup, delta);
+        }
+
         break; 
 
         case AGUARDANDO:
@@ -206,7 +220,10 @@ void drawGameWorld( GameWorld *gw ) {
         desenharBola (&gw -> bolinha);
         desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
         DesenharVida (&gw -> bolinha);
-    
+
+        if ( gw -> powerup.ativo){
+            desenharPowerUp (&gw -> powerup);
+        }
     }if ( gw -> estado == GAMEOVER){
         
         DesenharGameOver();
@@ -242,9 +259,13 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
 
                 gw -> pontuacaoAtual += alvo-> pontuacaoObtida;
                 alvo -> pontuacaoObtida = 0;
-                if ( alvo->temPowerUp == true){
+                
+                if ( alvo->temPowerUp){
 
-                    
+                    gw -> powerup.centro.x = alvo-> ret.x + (alvo -> ret.width /2);
+                    gw -> powerup.centro.y = alvo -> ret.y + (alvo -> ret.height/2);
+                    gw -> powerup.ativo = true;
+                    alvo -> temPowerUp = false;
 
                 }
             }
@@ -299,7 +320,7 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
         b -> centro.x = GetScreenWidth()/2;
         b -> centro.y =  j-> ret.y - j-> ret.height;
         
-        b -> velocidade.y = -200;
+        b -> velocidade.y = -400;
         b -> velocidade.x = GetRandomValue(-200, 200);
 
         j -> ret.x = GetScreenWidth()/2 - largura/2; 

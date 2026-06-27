@@ -23,4 +23,21 @@ void desenharAlvos ( Alvo *alvos, int quantidade){
     }
 
 }
+void desenharPowerUp ( PowerUp *pu){
+  
+    DrawCircle( pu -> centro.x, pu -> centro.y, pu -> raio, pu -> cor);
 
+}
+
+void atualizarPowerUp (PowerUp *pu, float delta){
+
+    pu -> centro.y += pu -> velocidadeY * delta;
+
+    if ( pu -> centro.y >= GetScreenHeight()){
+
+        pu -> ativo = false;
+
+    }
+
+
+}

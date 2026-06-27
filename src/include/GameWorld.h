@@ -29,7 +29,8 @@ typedef struct GameWorld {
     Alvo *alvos;
     Bola bolinha;
     Jogador jogador;
-
+    PowerUp powerup;
+    
     int lin;
     int col;
     int pontuacaoAtual;
