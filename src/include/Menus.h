@@ -13,7 +13,7 @@ typedef struct RetBotoes{
 }RetBotoes;
 
 
-void DesenharGameOver ();
-void DesenharMenuInicial();
+void DesenharGameOver (void);
+void DesenharMenuInicial(void);
 
 void InteragirMenu (EstadoJogo *estado);
