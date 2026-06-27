@@ -16,6 +16,10 @@ typedef struct Bola{
 
 }Bola;
 
+
+
 void atualizarBola ( Bola *b, float delta);
 void desenharBola (Bola *b);
 void DesenharVida (Bola *b);
+
+

@@ -30,7 +30,7 @@ int main( void ) {
         false            // init audio
     );
     
-    
+    srand(time(NULL));
     initGameWindow( gameWindow );
     InitAudioDevice();
 

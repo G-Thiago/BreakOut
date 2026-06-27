@@ -67,19 +67,19 @@ GameWorld *createGameWorld( void ) {
     
     //Baseado na coluna e linha que estou, faremos os alvos serem criados
 
-    Color cores[10] = {
+    Color cores[11] = {
 
-        RED, 
+        GREEN, 
+        GREEN, 
         BLUE, 
-        RED, 
         BLUE, 
-        RED, 
-        BLUE, 
+        PURPLE, 
+        PURPLE, 
         RED, 
         BLUE, 
         RED, 
         BLUE,
-
+        YELLOW,
 
     };
 
@@ -97,6 +97,8 @@ GameWorld *createGameWorld( void ) {
 
             int p = i * gw -> col + j;
 
+            bool sorteioPowerup = (rand() % 100 <= 8);
+
             gw -> alvos[p] = (Alvo){
 
                 .ret = {
@@ -107,7 +109,6 @@ GameWorld *createGameWorld( void ) {
                     .height = alturaAlvo,
 
                 },
-                .cor = cores[i],
                 .hp = i <= 5 ? 
                       (i * -1) + 6 :
                       1,
@@ -115,6 +116,9 @@ GameWorld *createGameWorld( void ) {
                                    (i * -50) + 600:
                                    100,
                 .pontuacaoAtual = 0,
+                .temPowerUp = sorteioPowerup,
+                .cor = sorteioPowerup ? YELLOW : cores[i],
+
             };
         }
     }
@@ -238,6 +242,11 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
 
                 gw -> pontuacaoAtual += alvo-> pontuacaoObtida;
                 alvo -> pontuacaoObtida = 0;
+                if ( alvo->temPowerUp == true){
+
+                    
+
+                }
             }
 
              if ( SobreposicaoX < SobreposicaoY){

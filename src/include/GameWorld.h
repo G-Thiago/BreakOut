@@ -21,6 +21,7 @@ typedef enum EstadoJogo{
 #include "Jogador.h"
 #include "Bolinha.h"
 #include "Menus.h"
+#include <time.h>
 
 typedef struct GameWorld {
     

@@ -1,13 +1,15 @@
 #pragma once
 
 #include <stdlib.h>
-
+#include <stdbool.h>
 #include "raylib/raylib.h"
 
 typedef struct Alvo{
 
     Rectangle ret;
     Color cor;
+    
+    bool temPowerUp;
     
     int pontuacaoObtida;
     int pontuacaoAtual;
