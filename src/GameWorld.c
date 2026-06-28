@@ -118,6 +118,9 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         atualizarJogador ( &gw -> jogador,  delta);
         atualizarBola (&gw -> bolinha, delta);
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
+        if (VerificarVitoria(gw)){
+            gw->estado = VITORIA;
+        }
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
         duracaoPowerUp(&gw -> bolinha, &gw -> powerup, delta);
@@ -148,6 +151,16 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         gw -> bolinha.vidaAtual = 3;
         gw -> pontuacaoAtual = 0;
     
+        resetAlvos(gw);
+
+        break;
+
+        case VITORIA:
+
+        InteragirMenu(&gw->estado);
+
+        gw->bolinha.vidaAtual = 3;
+        gw->pontuacaoAtual = 0;
         resetAlvos(gw);
 
         break;
@@ -186,12 +199,14 @@ void drawGameWorld( GameWorld *gw ) {
         }
     
     }   
+       
 
+        if (gw->estado == VITORIA){
 
-        
+        DesenharVitoria();
+
         EndDrawing();
     
-
     
 }
 
@@ -364,6 +379,22 @@ void resetAlvos(GameWorld *gw) {
 
     }
   }
+}
+
+bool VerificarVitoria(GameWorld *gw){
+
+    int quantidade = gw->lin * gw->col;
+
+    for(int i = 0; i < quantidade; i++){
+
+        if(gw->alvos[i].hp > 0){
+            return false;
+        }
+
+    }
+
+    return true;
+
 }
 
 Color sortearCorPlanoFundo (){
