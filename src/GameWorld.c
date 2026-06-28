@@ -23,7 +23,8 @@
 
 int largura = 150;
 int altura = 20;
-
+int velocidadeX_Padrao = 200;
+int velocidadeY_Padrao = -200; 
 /**
  * @brief Creates a dinamically allocated GameWorld struct instance.
  */
@@ -53,10 +54,12 @@ GameWorld *createGameWorld( void ) {
         },
 
         .velocidade = {
-            200,
-            -200,
+            velocidadeX_Padrao,
+            velocidadeY_Padrao,
         },
         .vidaAtual = 3,
+        .danoAtual = 1,
+        .danoAdcionado = false,
 
     };
     gw -> powerup = (PowerUp){
@@ -77,63 +80,11 @@ GameWorld *createGameWorld( void ) {
     
     //Baseado na coluna e linha que estou, faremos os alvos serem criados
 
-    Color cores[10] = {
-
-        RED, 
-        BLUE, 
-        RED, 
-        BLUE, 
-        RED, 
-        BLUE, 
-        RED, 
-        BLUE, 
-        RED, 
-        BLUE,
-
-
-    };
-
-    int larguraAlvo = 80;
-    int alturaAlvo = 20;
-    int espaço = 5;
-   
-    int larguraTotal = larguraAlvo * gw -> col + espaço * (gw -> col - 1);
-
-    int xIni = GetScreenWidth()/2 - larguraTotal/2;
-    int yIni = 150;
-   
-    for ( int i = 0; i < gw -> lin; i++){
-        for ( int j = 0; j < gw -> col; j++){
-
-            int p = i * gw -> col + j;
-
-            bool sorteioPowerup = (rand() % 100 <= 10);
-
-            gw -> alvos[p] = (Alvo){
-
-                .ret = {
-
-                    .x = xIni + j * (larguraAlvo + espaço),
-                    .y = yIni + i * (alturaAlvo + espaço),
-                    .width = larguraAlvo,
-                    .height = alturaAlvo,
-
-                },
-                .hp = i <= 5 ? 
-                      (i * -1) + 6 :
-                      1,
-                .pontuacaoObtida = 1 <= 5 ?
-                                   (i * -50) + 600:
-                                   100,
-                .pontuacaoAtual = 0,
-                .temPowerUp = sorteioPowerup,
-                .cor = sorteioPowerup ? YELLOW : cores[i],
-            };
-        }
-    }
+    resetAlvos(gw);
 
     
     gw -> estado = INICIO;
+    gw -> pontuacaoAtual = 0;
 
     return gw;
 
@@ -171,7 +122,22 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         if ( gw -> powerup.ativo == true){
             atualizarPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
         }
+        if ( gw -> bolinha.timer > 0){
+            gw -> bolinha.timer -= GetFrameTime();
 
+            if ( gw -> bolinha.timer <= 0){
+
+                gw -> bolinha.cor = WHITE;
+                gw -> bolinha.timer = 0;
+                if ( gw -> bolinha.danoAtual > 1){
+
+                    gw -> bolinha.danoAtual = 1;
+                    gw -> bolinha.velocidade.x = velocidadeX_Padrao;
+                    gw -> bolinha.velocidade.y = velocidadeY_Padrao;
+                }
+            }
+
+        }
         break; 
 
         case AGUARDANDO:
@@ -206,17 +172,20 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
-    
-    if ( gw -> estado == INICIO){
-         
-        DesenharMenuInicial( );
-    }
+   
+        Color ambiente = sortearCorPlanoFundo( &gw -> estado);
+
+    if ( gw -> estado == GAMEOVER || gw -> estado == INICIO){
+        
+        DesenharMenusIni_GameOver( &gw -> estado);
+
+
+    }    
     
     
     if ( gw -> estado == AGUARDANDO || gw -> estado == JOGANDO){
         
-        ClearBackground( BLACK );
-
+        ClearBackground(BLACK);
         desenharPontuacao (gw -> alvos, gw-> pontuacaoAtual, gw);
         desenharJogador( &gw->jogador );
         desenharBola (&gw -> bolinha);
@@ -229,12 +198,7 @@ void drawGameWorld( GameWorld *gw ) {
            
         }
     
-    }if ( gw -> estado == GAMEOVER){
-        
-        DesenharGameOver();
-        
-
-    }    
+    }   
 
 
         
@@ -252,7 +216,7 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
         
         if (CheckCollisionCircleRec ( b -> centro, b -> raio, alvo -> ret) && alvo -> hp > 0){
          
-            alvo->hp--;
+            alvo->hp -= b -> danoAtual;
             
             float centroAlvox = alvo -> ret.x + alvo -> ret.width / 2.0f;
             float centroAlvoy = alvo -> ret.y + alvo -> ret.height / 2.0f;
@@ -382,7 +346,7 @@ void resetAlvos(GameWorld *gw) {
     for (int i = 0; i < gw->lin; i++) {
         for (int j = 0; j < gw->col; j++) {
             
-            bool sorteioPowerup = (rand() % 100 <= 10);
+            bool sorteioPowerup = (rand() % 100 >= 1);
 
             int p = i * gw->col + j;
             
@@ -401,8 +365,46 @@ void resetAlvos(GameWorld *gw) {
                 (i <= 5) ? ((i * -50) + 600) : 100,
 
             .pontuacaoAtual = 0,
+            .temPowerUp = sorteioPowerup,
+
         };
 
     }
   }
+}
+
+Color sortearCorPlanoFundo (EstadoJogo *estado){
+
+    int sorteamento = GetRandomValue (1, 3);
+    Color ambiente;
+
+        switch ( sorteamento ){
+            
+            case 1:
+
+            ambiente = BLACK;
+
+            break;
+        
+            case 2:
+        
+            ambiente = GREEN;
+
+            break;
+
+            case 3:
+
+            ambiente = PURPLE;
+
+            break;
+
+        
+        break;
+
+        
+    }
+
+    return ambiente;
+
+
 }

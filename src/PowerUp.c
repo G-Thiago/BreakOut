@@ -2,6 +2,7 @@
 
 #include "raylib/raylib.h"
 
+
 #include "PowerUp.h"
 
 void desenharPowerUp ( PowerUp *pu){
@@ -39,7 +40,35 @@ void atualizarPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta){
 
 void ativarPowerUp (Bola *b, PowerUp *pu){
 
+    int decidirPowerUp = GetRandomValue ( 1, 3);
 
+    switch (decidirPowerUp){
+
+        case 1:
+
+        if ( b -> vidaAtual < 3){
+
+            b -> vidaAtual ++;
+
+        }
+        
+        break;
+
+
+        case 2:
+        
+        if ( b -> danoAtual <= 5){
+        
+            b -> danoAtual += 2;
+            b -> timer = 10;
+            b -> cor = RED;
+        
+        }
+        break;
+
+        case 3:
+        
+        
 
 
 }

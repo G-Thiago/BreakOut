@@ -6,12 +6,78 @@
 #define LARGURARET 250
 #define ALTURARET 100
 
-void DesenharMenuInicial(void){
-    
-    ClearBackground(BLUE);
+void DesenharMenusIni_GameOver (EstadoJogo *estado){
+
+    if ( *estado == GAMEOVER){
+
+    ClearBackground(RED);
+
+        const char *reiniciar = "Reiniciar";
+        const char *sair = "SAIR";
+        const char *GameOver = "GAME OVER";
+
+        int Fonte = 50;
+
+        int larguraReiniciar = MeasureText(reiniciar, Fonte);
+        int larguraSair = MeasureText(sair, Fonte);
+        int larguraGameOver = MeasureText (GameOver, Fonte);
+
+           RetBotoes  retReiniciar = {
+
+        .ret = {
+            .x = ( GetScreenWidth()/2.0f ) - ( LARGURARET / 2.0f),
+            .y = (GetScreenHeight()/2.0f),
+            .width = LARGURARET,
+            .height = ALTURARET,
+        },
+        
+        .cor = WHITE,
 
         
 
+
+    };
+
+    int espacoEntreSairEjogar = 20;
+
+    RetBotoes retSair = {
+
+        .ret = {
+            .x = retReiniciar.ret.x,
+            .y = retReiniciar.ret.y + retReiniciar.ret.height + espacoEntreSairEjogar,
+            .width = LARGURARET,
+            .height = ALTURARET,
+    
+        },
+        .cor = WHITE,
+
+    };
+
+    DrawRectangleRec ( retReiniciar.ret, retReiniciar.cor);
+    DrawRectangleRec ( retSair.ret, retSair.cor);
+
+    DrawText ( reiniciar, 
+               2*retReiniciar.ret.x - (larguraReiniciar + 10),
+               retReiniciar.ret.y,
+                Fonte,
+                 BLACK );
+
+    DrawText (sair,
+              2*retSair.ret.x - larguraSair,
+              retSair.ret.y,
+              Fonte,
+              BLACK);
+    
+    DrawText ( GameOver,
+              GetScreenWidth()/2 - larguraGameOver/2,
+              50,
+              Fonte,
+              BLACK);
+
+
+    }if ( *estado == INICIO ){
+
+    ClearBackground (BLUE);
 
         const char *jogar = "JOGAR";
         const char *sair = "SAIR";
@@ -25,7 +91,7 @@ void DesenharMenuInicial(void){
         int larguraTitulo = MeasureText (titulo, Fonte);
         int larguraAutores = MeasureText (autores, Fonte);
 
-    RetBotoes  retJogar = {
+         RetBotoes  retJogar = {
 
         .ret = {
             .x = ( GetScreenWidth()/2.0f ) - ( LARGURARET / 2.0f),
@@ -83,78 +149,11 @@ void DesenharMenuInicial(void){
               GetScreenHeight() - 20,
               20,
               BLACK);
-                    
-                
-}
 
-void DesenharGameOver (void){
+    }
 
-    ClearBackground(RED);
-
-    const char *jogar = "Reiniciar";
-        const char *sair = "SAIR";
-        const char *titulo = "GAME OVER";
-
-        int Fonte = 50;
-
-        int larguraJogar = MeasureText(sair, Fonte);
-        int larguraSair = MeasureText(sair, Fonte);
-        int larguraTitulo = MeasureText (titulo, Fonte);
-
-    RetBotoes  retReiniciar = {
-
-        .ret = {
-            .x = ( GetScreenWidth()/2.0f ) - ( LARGURARET / 2.0f),
-            .y = (GetScreenHeight()/2.0f),
-            .width = LARGURARET,
-            .height = ALTURARET,
-        },
-        
-        .cor = WHITE,
-
-
-    };
-
-    int espacoEntreSairEjogar = 20;
-
-    RetBotoes retSair = {
-
-        .ret = {
-            .x = retReiniciar.ret.x,
-            .y = retReiniciar.ret.y + retReiniciar.ret.height + espacoEntreSairEjogar,
-            .width = LARGURARET,
-            .height = ALTURARET,
+ 
     
-        },
-        .cor = WHITE,
-
-    };
-
-    
-
-    DrawRectangleRec ( retReiniciar.ret, retReiniciar.cor);
-    DrawRectangleRec ( retSair.ret, retSair.cor);
-
-
-    DrawText ( jogar, 
-               2*retReiniciar.ret.x - (larguraJogar + 10),
-               retReiniciar.ret.y,
-                Fonte,
-                 BLACK );
-
-    DrawText (sair,
-              2*retSair.ret.x - larguraSair,
-              retSair.ret.y,
-              Fonte,
-              BLACK);
-    
-    DrawText (titulo,
-              GetScreenWidth()/2 - larguraTitulo/2,
-              50,
-              Fonte,
-              BLACK);
-
-
 }
 
 

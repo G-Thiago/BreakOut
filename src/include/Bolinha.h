@@ -13,7 +13,9 @@ typedef struct Bola{
     Vector2 centro;
     Vector2 velocidade;
 
-    int bolasAtual;
+    float danoAtual;
+    bool danoAdcionado;
+    float timer;
     
 }Bola;
 
