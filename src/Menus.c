@@ -57,10 +57,10 @@ void DesenharMenusIni_GameOver (EstadoJogo *estado){
     DrawRectangleRec ( retSair.ret, retSair.cor);
 
     DrawText ( reiniciar, 
-               retReiniciar.ret.x/2 + (larguraReiniciar/2),
-               retReiniciar.ret.y,
+                retReiniciar.ret.x + (retReiniciar.ret.width - larguraReiniciar)/2,
+                retReiniciar.ret.y + (retReiniciar.ret.height - Fonte)/2,
                 Fonte,
-                 BLACK );
+                BLACK );
 
     DrawText (sair,
               2*retSair.ret.x - larguraSair,
@@ -205,3 +205,67 @@ void InteragirMenu (EstadoJogo *estado){
  }
 
 } 
+
+void DesenharVitoria(void){
+
+    ClearBackground(GREEN);
+
+    const char *jogar = "Reiniciar";
+    const char *sair = "SAIR";
+    const char *titulo = "VOCE VENCEU!";
+
+    int Fonte = 50;
+
+    int larguraJogar = MeasureText(jogar, Fonte);
+    int larguraSair = MeasureText(sair, Fonte);
+    int larguraTitulo = MeasureText(titulo, Fonte);
+
+    RetBotoes retReiniciar = {
+
+        .ret = {
+            .x = (GetScreenWidth()/2.0f) - (LARGURARET/2.0f),
+            .y = (GetScreenHeight()/2.0f),
+            .width = LARGURARET,
+            .height = ALTURARET,
+        },
+
+        .cor = WHITE,
+
+    };
+
+    int espacoEntreBotoes = 20;
+
+    RetBotoes retSair = {
+
+        .ret = {
+            .x = retReiniciar.ret.x,
+            .y = retReiniciar.ret.y + retReiniciar.ret.height + espacoEntreBotoes,
+            .width = LARGURARET,
+            .height = ALTURARET,
+        },
+
+        .cor = WHITE,
+
+    };
+
+    DrawRectangleRec(retReiniciar.ret, retReiniciar.cor);
+    DrawRectangleRec(retSair.ret, retSair.cor);
+
+    DrawText(jogar,
+             retReiniciar.ret.x + (LARGURARET - larguraJogar)/2,
+             retReiniciar.ret.y + (ALTURARET - Fonte)/2,
+             Fonte,
+             BLACK);
+
+    DrawText(sair,
+             retSair.ret.x + (LARGURARET - larguraSair)/2,
+             retSair.ret.y + (ALTURARET - Fonte)/2,
+             Fonte,
+             BLACK);
+
+    DrawText(titulo,
+             GetScreenWidth()/2 - larguraTitulo/2,
+             50,
+             Fonte,
+             BLACK);
+}
