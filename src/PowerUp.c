@@ -5,6 +5,8 @@
 
 #include "PowerUp.h"
 
+ 
+
 void desenharPowerUp ( PowerUp *pu){
     
     if ( pu -> ativo){
@@ -13,7 +15,7 @@ void desenharPowerUp ( PowerUp *pu){
     }
 }
 
-void atualizarPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta){
+void MoverPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta){
     
     if ( !pu -> ativo ) return;
 
@@ -32,10 +34,7 @@ void atualizarPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta){
         ativarPowerUp ( b, pu);
 
     }
-        
-
     
-
 }
 
 void ativarPowerUp (Bola *b, PowerUp *pu){
@@ -46,9 +45,13 @@ void ativarPowerUp (Bola *b, PowerUp *pu){
 
         case 1:
 
-        if ( b -> vidaAtual < 3){
+        if ( b -> vidaAtual < 4){
 
             b -> vidaAtual ++;
+
+        }else{
+
+            b -> danoAtual ++;
 
         }
         
@@ -62,13 +65,40 @@ void ativarPowerUp (Bola *b, PowerUp *pu){
             b -> danoAtual += 2;
             b -> timer = 10;
             b -> cor = RED;
-        
+
         }
         break;
 
         case 3:
+
+            b -> raio = 25;
+            b -> timer = 10;
         
-        
+
+
+ }
+}
+
+void duracaoPowerUp (Bola *b, PowerUp *pu, float delta){
+
+     if ( b -> timer > 0){
+             b -> timer -= GetFrameTime();
+
+            if (  b -> timer <= 0){
+
+                 b -> cor = WHITE;
+                 b -> timer = 0;
+                 b -> raio = 10;
+                 
+                if ( b -> danoAtual > 1){
+
+                  b -> danoAtual = 1;
+                  b -> velocidade.y = -300;
+                    
+                }
+            }
+
+        }
 
 
 }

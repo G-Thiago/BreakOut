@@ -57,7 +57,7 @@ void DesenharMenusIni_GameOver (EstadoJogo *estado){
     DrawRectangleRec ( retSair.ret, retSair.cor);
 
     DrawText ( reiniciar, 
-               2*retReiniciar.ret.x - (larguraReiniciar + 10),
+               retReiniciar.ret.x/2 + (larguraReiniciar/2),
                retReiniciar.ret.y,
                 Fonte,
                  BLACK );

@@ -39,14 +39,14 @@ GameWorld *createGameWorld( void ) {
                   GetScreenHeight() - (3*altura), 
                   largura,  
                   altura },
-        .velocidadeBase = 200,
-        .velocidadeAtual = 0,
+        .velocidadeBase = 200.0f,
+        .velocidadeAtual = 0.0f,
         .cor = WHITE,
     };
 
     gw -> bolinha = (Bola){
 
-        .raio = 10,
+        .raio = 10.0f,
         .cor = WHITE,
         .centro = {
             GetScreenWidth()/2,
@@ -60,7 +60,7 @@ GameWorld *createGameWorld( void ) {
         .vidaAtual = 3,
         .danoAtual = 1,
         .danoAdcionado = false,
-
+        .velocidadeBase = 200.0f,
     };
     gw -> powerup = (PowerUp){
 
@@ -72,7 +72,8 @@ GameWorld *createGameWorld( void ) {
 
 
     };
-    
+
+    gw -> ambiente = sortearCorPlanoFundo();
     gw -> lin = 10;
     gw -> col = 6;
 
@@ -85,6 +86,7 @@ GameWorld *createGameWorld( void ) {
     
     gw -> estado = INICIO;
     gw -> pontuacaoAtual = 0;
+    gw -> proximaAceleracao = 1000;
 
     return gw;
 
@@ -118,26 +120,13 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
-        
+        duracaoPowerUp(&gw -> bolinha, &gw -> powerup, delta);
+        aceleracao ( gw);
+
         if ( gw -> powerup.ativo == true){
-            atualizarPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
+            MoverPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
         }
-        if ( gw -> bolinha.timer > 0){
-            gw -> bolinha.timer -= GetFrameTime();
-
-            if ( gw -> bolinha.timer <= 0){
-
-                gw -> bolinha.cor = WHITE;
-                gw -> bolinha.timer = 0;
-                if ( gw -> bolinha.danoAtual > 1){
-
-                    gw -> bolinha.danoAtual = 1;
-                    gw -> bolinha.velocidade.x = velocidadeX_Padrao;
-                    gw -> bolinha.velocidade.y = velocidadeY_Padrao;
-                }
-            }
-
-        }
+    
         break; 
 
         case AGUARDANDO:
@@ -173,19 +162,17 @@ void drawGameWorld( GameWorld *gw ) {
 
     BeginDrawing();
    
-        Color ambiente = sortearCorPlanoFundo( &gw -> estado);
-
     if ( gw -> estado == GAMEOVER || gw -> estado == INICIO){
         
         DesenharMenusIni_GameOver( &gw -> estado);
-
+        gw -> bolinha.timer = 0;
 
     }    
     
     
     if ( gw -> estado == AGUARDANDO || gw -> estado == JOGANDO){
         
-        ClearBackground(BLACK);
+        ClearBackground( gw -> ambiente);
         desenharPontuacao (gw -> alvos, gw-> pontuacaoAtual, gw);
         desenharJogador( &gw->jogador );
         desenharBola (&gw -> bolinha);
@@ -195,7 +182,7 @@ void drawGameWorld( GameWorld *gw ) {
         if ( gw -> powerup.ativo && gw -> estado == JOGANDO){
             
                 desenharPowerUp (&gw -> powerup);
-           
+
         }
     
     }   
@@ -271,16 +258,22 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
   }
 }
 
-void resolverColisaoBolinhaJogador (Bola *b, Jogador *j){
+void resolverColisaoBolinhaJogador(Bola *b, Jogador *j) {
+   
+    if (CheckCollisionCircleRec(b->centro, b->raio, j->ret)) {
+        
+        
+        float pontoDeImpacto = (b->centro.x - j->ret.x) / j->ret.width;
+        float fatorAngulo = (pontoDeImpacto - 0.5f) * 2.0f;     
 
+        
+        float vel = b -> velocidadeBase;
 
-   if ( CheckCollisionCircleRec ( b -> centro, b -> raio, j -> ret)){
-        b-> centro.y = j -> ret.y - b -> raio; 
-        b -> velocidade.y *= -1;    
+        b->velocidade.x = fatorAngulo * vel;
+        b->velocidade.y = -vel; 
+
+        b->centro.y = j->ret.y - b->raio;
     }
-
-
-
 }
 void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
 
@@ -346,7 +339,7 @@ void resetAlvos(GameWorld *gw) {
     for (int i = 0; i < gw->lin; i++) {
         for (int j = 0; j < gw->col; j++) {
             
-            bool sorteioPowerup = (rand() % 100 >= 1);
+            bool sorteioPowerup = (rand() % 100 <= 15);
 
             int p = i * gw->col + j;
             
@@ -373,33 +366,61 @@ void resetAlvos(GameWorld *gw) {
   }
 }
 
-Color sortearCorPlanoFundo (EstadoJogo *estado){
+Color sortearCorPlanoFundo (){
 
     int sorteamento = GetRandomValue (1, 3);
     Color ambiente;
-
+    Color corRandomica;
+        
         switch ( sorteamento ){
             
             case 1:
 
-            ambiente = BLACK;
+            corRandomica = (Color) {
+
+                    0,
+                    150,
+                    0,
+                    200,
+            };
+
+            ambiente = corRandomica;
 
             break;
         
             case 2:
         
-            ambiente = GREEN;
+             corRandomica = (Color) {
+
+                    0,
+                    100,
+                    150,
+                    200,
+            };
+
+            ambiente = corRandomica;
 
             break;
 
             case 3:
 
-            ambiente = PURPLE;
+             corRandomica = (Color) {
+
+                    128,
+                    0,
+                    240,
+                    200,
+            };
+
+            ambiente = corRandomica;
 
             break;
 
+            case 4:
+
+            ambiente = BLACK;
         
-        break;
+            break;
 
         
     }
@@ -408,3 +429,24 @@ Color sortearCorPlanoFundo (EstadoJogo *estado){
 
 
 }
+
+void aceleracao ( GameWorld *gw){
+
+    if (gw->pontuacaoAtual >= gw->proximaAceleracao) {
+    
+    float incremento = 100.0f;
+    
+    if (gw->bolinha.velocidade.x > 0.0f) gw->bolinha.velocidade.x += incremento;
+    else gw->bolinha.velocidade.x -= incremento;
+    
+    if (gw->bolinha.velocidade.y > 0.0f) gw->bolinha.velocidade.y += incremento;
+    else gw->bolinha.velocidade.y -= incremento;
+    
+    gw -> proximaAceleracao += 1000.0f;
+    gw -> bolinha.velocidadeBase += 100.0f;
+
+  }
+
+
+}
+

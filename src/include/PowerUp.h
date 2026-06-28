@@ -19,5 +19,6 @@ typedef struct PowerUp{
 }PowerUp;
 
 void desenharPowerUp ( PowerUp *pu);
-void atualizarPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta);
+void MoverPowerUp ( PowerUp *pu, Jogador *j, Bola *b, float delta);
 void ativarPowerUp (Bola *b, PowerUp *pu);
+void duracaoPowerUp (Bola *b, PowerUp *pu, float delta);

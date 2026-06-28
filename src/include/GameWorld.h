@@ -33,10 +33,14 @@ typedef struct GameWorld {
     Jogador jogador;
     PowerUp powerup;
     
+    Color ambiente;
+
     int lin;
     int col;
+
     int pontuacaoAtual;
-    
+    int proximaAceleracao;
+
 } GameWorld;
 
 
@@ -62,8 +66,12 @@ void drawGameWorld( GameWorld *gw );
 
 void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quantidade);
 void resolverColisaoBolinhaJogador (Bola *b, Jogador *j);
+
 void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j);
-void desenharPontuacao (Alvo *a, int PontucaoAtual, GameWorld *gw);
 void resetAlvos(GameWorld *gw);
 
-Color sortearCorPlanoFundo (EstadoJogo *estado);
+void desenharPontuacao (Alvo *a, int PontucaoAtual, GameWorld *gw);
+void aceleracao ( GameWorld *gw);
+
+
+Color sortearCorPlanoFundo ();
