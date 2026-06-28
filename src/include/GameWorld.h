@@ -14,6 +14,7 @@ typedef enum EstadoJogo{
     JOGANDO,
     AGUARDANDO,
     GAMEOVER,
+    VITORIA,
     
 
 }EstadoJogo;
@@ -73,5 +74,6 @@ void resetAlvos(GameWorld *gw);
 void desenharPontuacao (Alvo *a, int PontucaoAtual, GameWorld *gw);
 void aceleracao ( GameWorld *gw);
 
+bool VerificarVitoria(GameWorld *gw);
 
 Color sortearCorPlanoFundo ();
