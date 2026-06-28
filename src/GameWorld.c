@@ -397,7 +397,7 @@ bool VerificarVitoria(GameWorld *gw){
 
 }
 
-Color sortearCorPlanoFundo (){
+Color sortearCorPlanoFundo ( void ){
 
     int sorteamento = GetRandomValue (1, 3);
     Color ambiente;
