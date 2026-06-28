@@ -2,7 +2,6 @@
 
 #include "raylib/raylib.h"
 
-#include "GameWorld.h"
 
 typedef struct RetBotoes{
 

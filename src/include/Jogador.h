@@ -10,6 +10,10 @@ typedef struct Jogador {
     
     Color cor;
 
+    bool dashAtivo;
+    int velocidadeDashBase;
+    int velocidadeDashAtual;
+
 } Jogador;
 
 void entradaJogador( Jogador *j );

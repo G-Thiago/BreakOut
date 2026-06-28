@@ -15,7 +15,6 @@
 //#undef RAYGUI_IMPLEMENTATION     // raygui.h
 
 #include "GameWorld.h"
-
 #include "Jogador.h"
 #include "Bolinha.h"
 #include "ResourceManager.h"
@@ -42,6 +41,9 @@ GameWorld *createGameWorld( void ) {
         .velocidadeBase = 200.0f,
         .velocidadeAtual = 0.0f,
         .cor = WHITE,
+        .dashAtivo = false,
+        .velocidadeDashBase = 75.0f,
+        .velocidadeDashAtual = 0.0f,
     };
 
     gw -> bolinha = (Bola){
@@ -118,13 +120,15 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         atualizarJogador ( &gw -> jogador,  delta);
         atualizarBola (&gw -> bolinha, delta);
         resolverColisaoBolinhaAlvos ( &gw -> bolinha, gw -> alvos, gw, gw-> lin * gw-> col);
+        
         if (VerificarVitoria(gw)){
             gw->estado = VITORIA;
         }
+
         resolverColisaoBolinhaJogador (&gw -> bolinha, &gw -> jogador);
         ResetarBola_eJogo (&gw -> bolinha, &gw -> estado, &gw -> jogador);
         duracaoPowerUp(&gw -> bolinha, &gw -> powerup, delta);
-        aceleracao ( gw);
+        aceleracao (gw);
 
         if ( gw -> powerup.ativo == true){
             MoverPowerUp ( &gw -> powerup, &gw -> jogador, &gw -> bolinha, delta);
@@ -140,6 +144,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         if (IsKeyPressed(KEY_SPACE)){
 
             gw -> estado = JOGANDO;
+            gw -> bolinha.velocidade.x = GetRandomValue(-gw -> bolinha.velocidade.x, gw -> bolinha.velocidade.x);
+
+
+            
         }
 
         break;
@@ -150,7 +158,11 @@ void updateGameWorld( GameWorld *gw, float delta ) {
         
         gw -> bolinha.vidaAtual = 3;
         gw -> pontuacaoAtual = 0;
-    
+        gw -> bolinha.velocidade = (Vector2) {
+            200,
+            200,
+        };
+
         resetAlvos(gw);
 
         break;
@@ -161,6 +173,10 @@ void updateGameWorld( GameWorld *gw, float delta ) {
 
         gw->bolinha.vidaAtual = 3;
         gw->pontuacaoAtual = 0;
+         gw -> bolinha.velocidade = (Vector2) {
+            200,
+            200,
+        };
         resetAlvos(gw);
 
         break;
@@ -191,7 +207,7 @@ void drawGameWorld( GameWorld *gw ) {
         desenharBola (&gw -> bolinha);
         desenharAlvos (gw -> alvos, (gw -> lin * gw -> col));
         DesenharVida (&gw -> bolinha);
-
+        
         if ( gw -> powerup.ativo && gw -> estado == JOGANDO){
             
                 desenharPowerUp (&gw -> powerup);
@@ -203,11 +219,11 @@ void drawGameWorld( GameWorld *gw ) {
 
         if (gw->estado == VITORIA){
 
-        DesenharVitoria();
+        DesenharVitoria();    
+    
+ }
+         EndDrawing();
 
-        EndDrawing();
-    
-    
 }
 
 void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quantidade){
@@ -274,22 +290,34 @@ void resolverColisaoBolinhaAlvos (Bola *b, Alvo *alvos, GameWorld *gw, int quant
 }
 
 void resolverColisaoBolinhaJogador(Bola *b, Jogador *j) {
-   
     if (CheckCollisionCircleRec(b->centro, b->raio, j->ret)) {
-        
-        
-        float pontoDeImpacto = (b->centro.x - j->ret.x) / j->ret.width;
-        float fatorAngulo = (pontoDeImpacto - 0.5f) * 2.0f;     
+       
+        float bordaEsquerda = j->ret.x;
+        float bordaDireita = j->ret.x + j->ret.width;
+        float bordaSuperior = j->ret.y;
 
-        
-        float vel = b -> velocidadeBase;
+        if (b->centro.x <= bordaEsquerda || b->centro.x >= bordaDireita) {
+       
+            b->velocidade.x *= -1;
+       
+        } 
+        else {
+       
+            float pontoDeImpacto = (b->centro.x - j->ret.x) / j->ret.width;
+            float fatorAngulo = (pontoDeImpacto - 0.5f) * 2.0f; 
+            float variacao = (float)GetRandomValue(-15, 15);
+            float vel = b->velocidadeBase;
 
-        b->velocidade.x = fatorAngulo * vel;
-        b->velocidade.y = -vel; 
+            b->velocidade.x = (fatorAngulo * vel) + variacao;
+            b->velocidade.y = -fabs(vel);
 
-        b->centro.y = j->ret.y - b->raio;
+            b->centro.y = bordaSuperior - b->raio;
+       
+        }
+    
     }
 }
+
 void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
 
     if ( b -> centro.y + b -> raio >= GetScreenHeight()){
@@ -318,29 +346,11 @@ void ResetarBola_eJogo (Bola *b, EstadoJogo *estado, Jogador *j){
  }
 }
 
-void desenharPontuacao (Alvo *a, int PontuacaoAtual, GameWorld *gw){
-
-    int Fonte = 50;
-    int Margem = 30;
-    int Fim_eixoX = GetScreenWidth();
-
-    const char *Score = TextFormat ("%d", gw-> pontuacaoAtual);
-    int larguraScore = MeasureText (Score, Fonte);
-
-    DrawText(Score, 
-             Fim_eixoX - (Margem + larguraScore),
-             20, 
-             Fonte, 
-             WHITE);
-
-
-}
-
 void resetAlvos(GameWorld *gw) {
 
-    Color cores[10] = {
+    Color cores[11] = {
         RED, BLUE, RED, BLUE, RED,
-        BLUE, RED, BLUE, RED, BLUE
+        BLUE, RED, BLUE, RED, BLUE, YELLOW
     };
 
     int larguraAlvo = 80;
@@ -381,103 +391,30 @@ void resetAlvos(GameWorld *gw) {
   }
 }
 
-bool VerificarVitoria(GameWorld *gw){
-
-    int quantidade = gw->lin * gw->col;
-
-    for(int i = 0; i < quantidade; i++){
-
-        if(gw->alvos[i].hp > 0){
-            return false;
-        }
-
-    }
-
-    return true;
-
-}
-
-Color sortearCorPlanoFundo ( void ){
-
-    int sorteamento = GetRandomValue (1, 3);
-    Color ambiente;
-    Color corRandomica;
-        
-        switch ( sorteamento ){
-            
-            case 1:
-
-            corRandomica = (Color) {
-
-                    0,
-                    150,
-                    0,
-                    200,
-            };
-
-            ambiente = corRandomica;
-
-            break;
-        
-            case 2:
-        
-             corRandomica = (Color) {
-
-                    0,
-                    100,
-                    150,
-                    200,
-            };
-
-            ambiente = corRandomica;
-
-            break;
-
-            case 3:
-
-             corRandomica = (Color) {
-
-                    128,
-                    0,
-                    240,
-                    200,
-            };
-
-            ambiente = corRandomica;
-
-            break;
-
-            case 4:
-
-            ambiente = BLACK;
-        
-            break;
-
-        
-    }
-
-    return ambiente;
-
-
-}
-
 void aceleracao ( GameWorld *gw){
 
     if (gw->pontuacaoAtual >= gw->proximaAceleracao) {
     
-    float incremento = 100.0f;
-    
-    if (gw->bolinha.velocidade.x > 0.0f) gw->bolinha.velocidade.x += incremento;
-    else gw->bolinha.velocidade.x -= incremento;
-    
-    if (gw->bolinha.velocidade.y > 0.0f) gw->bolinha.velocidade.y += incremento;
-    else gw->bolinha.velocidade.y -= incremento;
-    
-    gw -> proximaAceleracao += 1000.0f;
-    gw -> bolinha.velocidadeBase += 100.0f;
+        float incremento = 30.0f;
+        
+        if (gw->bolinha.velocidade.x > 0.0f){
+            
+            gw->bolinha.velocidade.x += incremento;
+        
+        }else gw->bolinha.velocidade.x -= incremento;
+        
+        if (gw->bolinha.velocidade.y > 0.0f){ 
+            
+            gw->bolinha.velocidade.y += incremento;
 
-  }
+        }else gw->bolinha.velocidade.y -= incremento;
+        
+        gw -> proximaAceleracao += 1000.0f;
+        gw -> bolinha.velocidadeBase += 100.0f;
+
+    }
 
 
 }
+
 

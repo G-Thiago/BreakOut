@@ -93,7 +93,7 @@ void duracaoPowerUp (Bola *b, PowerUp *pu, float delta){
                 if ( b -> danoAtual > 1){
 
                   b -> danoAtual = 1;
-                  b -> velocidade.y = -300;
+                  
                     
                 }
             }

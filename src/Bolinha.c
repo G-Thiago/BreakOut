@@ -1,7 +1,7 @@
 #include <stdlib.h>
-
+#include <math.h>
 #include "raylib/raylib.h"
-#include "GameWorld.h"
+#include "Bolinha.h"
 
 void desenharBola (Bola *b){
 
@@ -23,7 +23,7 @@ void atualizarBola ( Bola *b, float delta){
         
     }else if ( b -> centro.x + b -> raio >= GetScreenWidth()){
 
-        b -> centro.x = GetScreenWidth() - b-> raio;
+        b -> centro.x = GetScreenWidth() - (b-> raio );
         b -> velocidade.x *= -1;
     
     
@@ -32,6 +32,20 @@ void atualizarBola ( Bola *b, float delta){
         b -> centro.y = b -> raio;
         b -> velocidade.y *= -1;
 
+
+    }
+    if ( abs(b -> velocidade.x >= 350) || abs(b -> velocidade.y >= 350)){
+
+        
+            float direcaoX = ( b -> velocidade.x >= 0 ) ? 1.0f : -1.0f;
+            float direcaoY = ( b -> velocidade.y >= 0 ) ? 1.0f : -1.0f; 
+        
+        b -> velocidade = (Vector2) {
+
+            .x = (350 + GetRandomValue(-20,20)) * direcaoX,
+            .y = (350 + GetRandomValue(-20, 20)) * direcaoY,
+
+        };
 
     }
 
@@ -54,24 +68,3 @@ void DesenharVida (Bola *b){
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

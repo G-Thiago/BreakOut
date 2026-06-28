@@ -21,7 +21,6 @@ typedef enum EstadoJogo{
 
 #include "Alvo.h"
 #include "Jogador.h"
-#include "Bolinha.h"
 #include "Menus.h"
 #include "PowerUp.h"
 #include <time.h>
