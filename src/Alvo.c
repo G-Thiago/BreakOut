@@ -21,6 +21,7 @@ void desenharAlvos ( Alvo *alvos, int quantidade){
     for ( int i = 0; i < quantidade; i++){
 
         desenharAlvo (&alvos[i]);
+        desenharVidaAlvo(&alvos[i]);
     }
 
 }
