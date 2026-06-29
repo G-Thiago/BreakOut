@@ -378,6 +378,7 @@ void resetAlvos(GameWorld *gw) {
             .cor = sorteioPowerup ? YELLOW : cores[i],
 
             .hp = (i <= 5) ? ((i * -1) + 6) : 1,
+            .hpmax = (i <= 5) ? ((i * -1) + 6) : 1,
 
             .pontuacaoObtida =
                 (i <= 5) ? ((i * -50) + 600) : 100,
