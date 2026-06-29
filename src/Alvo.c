@@ -24,3 +24,32 @@ void desenharAlvos ( Alvo *alvos, int quantidade){
     }
 
 }
+
+void desenharVidaAlvo(Alvo *a){
+
+    if (a->hp <= 0)
+        return;
+
+    if (a->hp == a->hpmax)
+        return;
+
+    float porcentagem = (float)a->hp / a->hpmax;
+
+    DrawRectangle(
+        (int)a->ret.x,
+        (int)a->ret.y - 8,
+        (int)a->ret.width,
+        5,
+        DARKGRAY
+    );
+
+    DrawRectangle(
+        (int)a->ret.x,
+        (int)a->ret.y - 8,
+        (int)(a->ret.width * porcentagem),
+        5,
+        GREEN
+    );
+
+
+}
