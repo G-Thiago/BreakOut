@@ -14,10 +14,12 @@ typedef struct Alvo{
     int pontuacaoObtida;
     int pontuacaoAtual;
     int hp;
+    int hpmax;
 
 
 }Alvo;
 
+void desenharVidaAlvo( Alvo *a);
 void desenharAlvo ( Alvo *a);
 void desenharAlvos ( Alvo *alvos, int quantidade);
 
